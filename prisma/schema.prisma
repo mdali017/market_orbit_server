@@ -16,6 +16,7 @@ model User {
   Admins    Admins?
   Vendors   Vendors?
   Customers Customers?
+  Review    Review[]
 }
 
 model Admins {
@@ -37,11 +38,38 @@ model Customers {
 }
 
 model ProductCategory {
-  id String @id @default(uuid())
-  name String @unique
+  id          String    @id @default(uuid())
+  name        String    @unique
   description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Product     Product[]
+}
+
+model Product {
+  id             String          @id @default(uuid())
+  name           String
+  price          Float
+  categoryId     String
+  category       ProductCategory @relation(fields: [categoryId], references: [id])
+  inventoryCount Int             @default(0)
+  images         String[] // Array of image URLs
+  discounts      Float? // Percentage or flat discount (nullable)
+  ratings        Float? // Average ratings (nullable)
+  reviews        Review[] // Relation to Review model (defined separately)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  rating    Int      @default(0) // Rating out of 5
+  comment   String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 enum UserRole {
