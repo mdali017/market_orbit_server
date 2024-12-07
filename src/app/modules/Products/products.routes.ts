@@ -1,13 +1,14 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import { ProductControllers } from "./products.controller";
 import { fileUploader } from "../../../helpers/fileUploader";
-// import { UserControllers } from "./user.controller";
+// import { fileUploader } from "../../../shared/fileUploader";
 
 const router = express.Router();
 
+// Use `multipleUpload` for handling file uploads
 router.post(
   "/create-product",
-  fileUploader.upload.array("images" as any, 10),
+  fileUploader.multipleUpload,
   ProductControllers.createProduct
 );
 

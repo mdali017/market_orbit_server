@@ -17,6 +17,7 @@ model User {
   Vendors   Vendors?
   Customers Customers?
   Review    Review[]
+  Shop      Shop?
 }
 
 model Admins {
@@ -37,6 +38,15 @@ model Customers {
   user   User   @relation(fields: [userId], references: [id])
 }
 
+model Shop {
+  id          String  @id @default(uuid())
+  name        String
+  logo        String?
+  description String
+  userId      String  @unique
+  vendor      User    @relation(fields: [userId], references: [id])
+}
+
 model ProductCategory {
   id          String    @id @default(uuid())
   name        String    @unique
@@ -53,7 +63,7 @@ model Product {
   categoryId     String
   category       ProductCategory @relation(fields: [categoryId], references: [id])
   inventoryCount Int             @default(0)
-  images         String[] // Array of image URLs
+  images         String[]        @default([]) // Default empty array if no images
   discounts      Float? // Percentage or flat discount (nullable)
   ratings        Float? // Average ratings (nullable)
   reviews        Review[] // Relation to Review model (defined separately)

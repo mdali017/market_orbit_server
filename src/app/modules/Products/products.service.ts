@@ -1,36 +1,18 @@
-import { fileUploader } from "../../../helpers/fileUploader";
 import prisma from "../../../shared/prisma";
 
-const createProductIntoDB = async (
-  payload: any,
-  files: Express.Multer.File[]
-) => {
-  try {
+const createProductIntoDB = async (payload: any) => {
+  // Convert string values to proper types
+  const data = {
+    ...payload,
+    price: parseFloat(payload.price), // Convert price to Float
+    inventoryCount: parseInt(payload.inventoryCount, 10), // Convert inventoryCount to Int
+  };
 
-    // console.log(payload, files);
-    // Upload images to Cloudinary
-    const uploadPromises = files.map((file) =>
-      fileUploader.uploadToCloudinary(file)
-    );
-    const uploadedImages = await Promise.all(uploadPromises);
+  const result = await prisma.product.create({
+    data,
+  });
 
-    // Extract URLs from the uploaded results
-    const imageUrls = uploadedImages.map((image) => image?.url);
-
-    // Add image URLs to the payload
-    const productData = { ...payload, images: imageUrls };
-
-    // Save product to the database
-    const result = await prisma.product.create({
-      data: productData,
-    });
-
-    return result;
-  } catch (error: any) {
-    throw new Error(`Error creating product with images: ${error.message}`);
-  }
+  return result;
 };
 
-export const ProductsServices = {
-  createProductIntoDB,
-};
+export const ProductServices = { createProductIntoDB };

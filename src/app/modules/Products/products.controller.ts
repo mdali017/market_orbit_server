@@ -1,13 +1,27 @@
 import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
-import { ProductsServices } from "./products.service";
+import { ProductServices } from "./products.service";
+import { fileUploader } from "../../../helpers/fileUploader";
+// import { fileUploader } from "../../../shared/fileUploader";
 
 const createProduct = catchAsync(async (req: Request, res: Response) => {
-  const files = req.files as Express.Multer.File[];
+  // Parse product data
   const payload = JSON.parse(req.body.data);
-  // console.log(req.files, req.body);
-  const result = await ProductsServices.createProductIntoDB(payload, files);
+
+  // Upload images to Cloudinary
+  const imageFiles = req.files as Express.Multer.File[];
+  const uploadedImages = await Promise.all(
+    imageFiles.map((file) => fileUploader.uploadToCloudinary(file))
+  );
+
+  // Add image URLs to the payload
+  const imageUrls = uploadedImages.map((image) => image?.secure_url);
+  payload.images = imageUrls;
+
+  // Save product to the database
+  const result = await ProductServices.createProductIntoDB(payload);
+
   sendResponse(res, {
     statusCode: 200,
     success: true,
