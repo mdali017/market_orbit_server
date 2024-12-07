@@ -15,4 +15,9 @@ const createProductIntoDB = async (payload: any) => {
   return result;
 };
 
-export const ProductServices = { createProductIntoDB };
+const getAllProductsFromDB = async () => {
+  const result = await prisma.product.findMany({});
+  return result;
+};
+
+export const ProductServices = { createProductIntoDB, getAllProductsFromDB };
