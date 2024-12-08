@@ -4,6 +4,8 @@ import { PoductCategoryRoute } from "../modules/ProductCategories/productCategor
 import { VendorsRoute } from "../modules/Vendors/vendors.routes";
 import { ProductsRoute } from "../modules/Products/products.routes";
 import { ShopRoute } from "../modules/Shop/shop.routes";
+import { FollowedShopRoute } from "../modules/FollowedShop/followedShop.routes";
+import { FlashSaleRoute } from "../modules/FlashSale/flashSale.routes";
 
 const router = express.Router();
 
@@ -27,6 +29,14 @@ const moduleRoutes = [
   {
     path: "/shop",
     route: ShopRoute,
+  },
+  {
+    path: "/followed-shop",
+    route: FollowedShopRoute,
+  },
+  {
+    path: "/flash-sale",
+    route: FlashSaleRoute,
   },
 ];
 

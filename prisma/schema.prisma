@@ -33,19 +33,21 @@ model Vendors {
 }
 
 model Customers {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  id           String         @id @default(uuid())
+  userId       String         @unique
+  user         User           @relation(fields: [userId], references: [id])
+  FollowedShop FollowedShop[]
 }
 
 model Shop {
-  id          String    @id @default(uuid())
-  name        String
-  logo        String?
-  description String
-  userId      String    @unique
-  vendor      User      @relation(fields: [userId], references: [id])
-  Product     Product[]
+  id           String         @id @default(uuid())
+  name         String
+  logo         String?
+  description  String
+  userId       String         @unique
+  vendor       User           @relation(fields: [userId], references: [id])
+  product      Product[]
+  followedShop FollowedShop[]
 }
 
 model ProductCategory {
@@ -58,20 +60,21 @@ model ProductCategory {
 }
 
 model Product {
-  id             String          @id @default(uuid())
-  name           String
-  price          Float
-  inventoryCount Int             @default(0)
-  images         String[]        @default([])
-  discounts      Float?
-  ratings        Float?
-  reviews        Review[]
-  categoryId     String
-  category       ProductCategory @relation(fields: [categoryId], references: [id])
-  shopId         String
-  shop           Shop            @relation(fields: [shopId], references: [id])
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id               String             @id @default(uuid())
+  name             String
+  price            Float
+  inventoryCount   Int                @default(0)
+  images           String[]           @default([])
+  discounts        Float?
+  ratings          Float?
+  reviews          Review[]
+  categoryId       String
+  category         ProductCategory    @relation(fields: [categoryId], references: [id])
+  shopId           String
+  shop             Shop               @relation(fields: [shopId], references: [id])
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  flashSaleProduct FlashSaleProduct[]
 }
 
 model Review {
@@ -83,6 +86,37 @@ model Review {
   rating    Int      @default(0) // Rating out of 5
   comment   String?
   createdAt DateTime @default(now())
+}
+
+model FollowedShop {
+  id         String    @id @default(uuid())
+  customerId String
+  shopId     String
+  customer   Customers @relation(fields: [customerId], references: [id])
+  shop       Shop      @relation(fields: [shopId], references: [id])
+  createdAt  DateTime  @default(now())
+}
+
+model FlashSale {
+  id          String             @id @default(uuid())
+  name        String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  products    FlashSaleProduct[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model FlashSaleProduct {
+  id          String    @id @default(uuid())
+  flashSaleId String
+  flashSale   FlashSale @relation(fields: [flashSaleId], references: [id])
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+  discount    Float // Percentage discount for the product in the flash sale
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 enum UserRole {
