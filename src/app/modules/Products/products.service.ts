@@ -20,4 +20,35 @@ const getAllProductsFromDB = async () => {
   return result;
 };
 
-export const ProductServices = { createProductIntoDB, getAllProductsFromDB };
+const getProductByIdFromDB = async (id: string) => {
+  const result = await prisma.product.findUnique({
+    where: { id },
+    include: { shop: true, category: true },
+  });
+  return result;
+};
+
+const getProductsByCategoryFromDB = async (categoryId: string) => {
+  // console.log(categoryId);
+  const result = await prisma.product.findMany({
+    where: { categoryId },
+    include: { category: true },
+  });
+  return result;
+};
+
+const getProductsByShopFromDB = async (shopId: string) => {
+  const result = await prisma.product.findMany({
+    where: { shopId },
+    include: { category: true },
+  });
+  return result;
+};
+
+export const ProductServices = {
+  createProductIntoDB,
+  getAllProductsFromDB,
+  getProductByIdFromDB,
+  getProductsByCategoryFromDB,
+  getProductsByShopFromDB,
+};

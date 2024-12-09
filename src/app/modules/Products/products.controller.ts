@@ -40,4 +40,48 @@ const getAllProducts = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const ProductControllers = { createProduct, getAllProducts };
+const getProductById = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProductServices.getProductByIdFromDB(req.params.id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Product fetched successfully!",
+    data: result,
+  });
+});
+
+const getProductsByCategory = catchAsync(
+  async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    // console.log(req.params);
+    const result = await ProductServices.getProductsByCategoryFromDB(
+      categoryId
+    );
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Products fetched successfully!",
+      data: result,
+    });
+  }
+);
+
+const getProductsByShop = catchAsync(async (req: Request, res: Response) => {
+  const { shopId } = req.params;
+  // console.log(req.params);
+  const result = await ProductServices.getProductsByShopFromDB(shopId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Products fetched successfully!",
+    data: result,
+  });
+});
+
+export const ProductControllers = {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  getProductsByCategory,
+  getProductsByShop
+};

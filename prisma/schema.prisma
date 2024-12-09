@@ -71,7 +71,7 @@ model Product {
   categoryId       String
   category         ProductCategory    @relation(fields: [categoryId], references: [id])
   shopId           String
-  shop             Shop               @relation(fields: [shopId], references: [id])
+  shop             Shop               @relation(fields: [shopId], references: [id], onDelete: Cascade)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   flashSaleProduct FlashSaleProduct[]
@@ -113,7 +113,7 @@ model FlashSaleProduct {
   flashSaleId String
   flashSale   FlashSale @relation(fields: [flashSaleId], references: [id])
   productId   String
-  product     Product   @relation(fields: [productId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   discount    Float // Percentage discount for the product in the flash sale
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
